@@ -1,0 +1,433 @@
+@import url("https://fonts.googleapis.com/css2?family=Raleway&display=swap");
+@media only screen and (min-width: 940px) {
+    :root {
+        --smallest: 0.5rem;
+        --btw: 0.8rem;
+        --smaller: 0.8rem;
+        --small: 1rem;
+        --large: 5rem;
+        --mid-larger: 4rem;
+    }
+}
+@media only screen and (max-width: 939px) {
+    :root {
+        --smallest: 0.2rem;
+        --btw: 0.5rem;
+        --large: 5rem;
+        --smaller: 0.6rem;
+        --small: 0.7rem;
+        --mid-larger: 2.9rem;
+    }
+}
+@media only screen and (max-width: 550px) {
+    :root {
+        --smallest: 0.2rem;
+        --btw: 0.5rem;
+        --large: 5rem;
+        --smaller: 0.6rem;
+        --small: 0.7rem;
+        --mid-larger: 2.9rem;
+    }
+}
+
+@media only screen and (min-width: 940px) {
+    .inputForm {
+        width: 80%;
+        display: flex;
+        align-items: center;
+        font-size: var(--smaller);
+        margin-bottom: 10px;
+    }
+    .inputForm1 {
+        width: 50%;
+    }
+    .inputForm2 {
+        width: 50%;
+        text-align: right;
+    }
+}
+@media only screen and (max-width: 939px) {
+    .inputForm {
+        display: flex;
+        align-items: center;
+        font-size: var(--smaller);
+    }
+    .inputForm1 {
+        width: 50%;
+    }
+    .inputForm2 {
+        width: 50%;
+        text-align: right;
+    }
+    .invoice {
+        width: max-content;
+    }
+}
+@media only screen and (max-width: 550px) {
+    .inputForm {
+        display: block;
+    }
+    .inputForm1 {
+        width: 100%;
+    }
+    .inputForm2 {
+        width: 100%;
+        text-align: center;
+    }
+}
+
+.bgr {
+    text-align: center;
+    padding: 0;
+    margin: 0;
+    width: 100%;
+}
+.bgc {
+    background-color: whitesmoke;
+    padding: 0;
+    margin: 0;
+    width: 100%;
+}
+.inputForm2 {
+    margin: 0;
+}
+.inputForm2 input {
+    width: 50%;
+}
+.inputForm2 label {
+    width: 50%;
+}
+.inputForm {
+    margin: auto;
+    background-color: gray;
+    font-family: "Raleway", sans-serif;
+    font-weight: bold;
+    text-align: center;
+    border: 5px dashed rgb(70, 97, 109);
+    padding: 1.5px;
+    text-transform: capitalize;
+}
+.tools {
+    background-color: #4388cc;
+    max-width: fit-content;
+}
+.toools a {
+    font-size: calc(var(--small) * 2.5);
+    text-indent: var(--smallest);
+}
+
+.toools i {
+    margin: calc(var(--smallest) * 0.8);
+    cursor: pointer;
+}
+
+.seatStructure {
+    overflow: scroll;
+    margin: auto;
+    margin-bottom: 5px;
+    width: fit-content;
+    max-width: 95%;
+    text-align: center;
+    position: relative;
+    border: calc(var(--smallest) * 0.5) solid black;
+    background-color: rgba(134, 133, 130, 0.774);
+}
+.displayerBoxes {
+    margin: auto;
+    display: block;
+    text-align: center;
+}
+
+.slctbtn {
+    background-color: rgb(121, 110, 170);
+    padding: 15px;
+    border-radius: 30px;
+    margin-top: 50px;
+    color: black;
+    display: inline-block;
+    cursor: pointer;
+}
+
+.screen {
+    width: 100%;
+    height: var(--large);
+    background: #4388cc;
+    color: #fff;
+    font-size: var(--mid-larger);
+}
+.screen2 {
+    width: 100%;
+    height: var(--large);
+    color: black;
+    font-size: var(--mid-larger);
+}
+
+.seatGap {
+    visibility: hidden;
+}
+.seatVGap {
+    height: var(--mid-larger);
+    text-align: center;
+}
+
+.seatCGap {
+    font-size: var(--mid-larger);
+    margin: 0;
+    height: var(--btw);
+}
+
+.seatsBlock {
+    text-align: center;
+    margin: auto;
+    empty-cells: show;
+    transform: scale(0.85);
+}
+.seatsBlock td {
+    text-align: center;
+    margin: auto;
+    empty-cells: show;
+    width: var(--large);
+    font-size: calc(var(--btw) * 1.1);
+}
+
+.mapped img {
+    width: var(--btw);
+    height: var(--btw);
+}
+
+.mapped1 img {
+    width: calc(var(--small) * 2);
+    height: calc(var(--small) * 2);
+}
+.mapped1 {
+    display: inline-block;
+    border-radius: 100%;
+}
+.mapped {
+    display: inline-block;
+    border-radius: 100%;
+    width: calc(var(--small) * 2);
+    height: calc(var(--small) * 2);
+    text-align: center;
+}
+.mapped {
+    cursor: pointer;
+}
+.mapped p {
+    display: inline;
+    vertical-align: sub;
+    margin: 0;
+}
+.Displaytable {
+    text-align: center;
+    margin: auto;
+    table-layout: fixed;
+    border-collapse: collapse;
+    background-color: rgba(134, 133, 130, 0.774);
+    color: black;
+}
+.Displaytable tr,
+.Displaytable td {
+    border: 4px solid;
+    text-align: center;
+    width: 50vw;
+    margin: auto;
+    border-collapse: collapse;
+}
+
+.Displaytable p {
+    color: rgb(17, 8, 68);
+    font-weight: bold;
+    font-family: "Times New Roman", Times, serif;
+    font-size: var(--small);
+}
+
+.hdr {
+    font-weight: bolder;
+}
+
+.dt p {
+    font-weight: bold;
+    word-break: break-all;
+    hyphens: auto;
+    color: darkred;
+}
+
+.seats {
+    display: none;
+}
+.lbl {
+    display: block;
+    border: 2.5px solid transparent;
+    padding: 0;
+    margin: 0;
+    border-radius: 100%;
+}
+.seats:checked ~ .lbl {
+    border: 2.5px solid black;
+    background-color: maroon;
+}
+
+.notification {
+    background-color: #ffffff;
+    display: block;
+    text-align: center;
+}
+
+.invoice {
+    overflow: scroll;
+    margin: auto;
+    text-align: center;
+    z-index: 1500;
+    height: 95vh;
+    width: 75%;
+    position: fixed;
+    bottom: 1%;
+    right: 10%;
+    background-color: white;
+    border: 2px solid darkolivegreen;
+    font-size: var(--small);
+    font-family: sans-serif;
+}
+
+.title-of-section {
+    font-size: var(--mid-larger);
+    text-align: center;
+}
+
+.Displaytabledb {
+    text-align: center;
+    background-color: white;
+    border-collapse: collapse;
+    margin: auto;
+    display: block;
+    text-align: center;
+    width: 100%;
+    table-layout: fixed;
+    overflow: scroll;
+}
+.Displaytabledb td {
+    border: 1px solid;
+    font-size: var(--btw);
+    word-break: break-all;
+    background-color: white;
+}
+.Displaytabledb td p {
+    font-size: var(--btw);
+    word-break: keep-all;
+}
+.Displaytabledb th {
+    text-align: center;
+    background-color: darkblue;
+    color: white;
+    font-size: var(--btw);
+    padding: var(--smallest);
+}
+.ftr {
+    background-color: rgba(245, 243, 196, 0.721);
+    font-family: monospace;
+    font-size: var(--small);
+}
+
+/*/////////////////////////////////////*/
+.line {
+    transform: rotate(-70deg);
+}
+.linewrapper {
+    transform: translate(-210px, -480px);
+}
+.lineitem {
+    padding: 2px;
+}
+
+/*/////////////////////////////////////*/
+.line1 {
+    transform: rotate(70deg);
+}
+.linewrapper1 {
+    transform: translate(-100px, 646px);
+}
+.lineitem1 {
+    padding: 2px;
+}
+
+/*/////////////////////////////////////*/
+.linewrapper2 {
+    transform: translate(340px, 40px);
+}
+.lineitem2 {
+    padding: 2px;
+}
+
+/*/////////////////////////////////////*/
+.line3 {
+    transform: rotate(90deg);
+}
+.linewrapper3 {
+    transform: translate(-100px, 630px);
+}
+.lineitem3 {
+    padding: 2px;
+}
+/*/////////////////////////////////////*/
+
+.linewrapper4 {
+    transform: translate(660px, -125px);
+}
+.lineitem4 {
+    padding: 2px;
+}
+/*/////////////////////////////////////*/
+
+.linewrapper5 {
+    transform: translate(660px, -85px);
+}
+.lineitem5 {
+    padding: 2px;
+}
+
+/*/////////////////////////////////////*/
+.line6 {
+    transform: rotate(-70deg);
+}
+
+.linewrapper6 {
+    transform: translate(410px, -666px);
+}
+.lineitem6 {
+    padding: 2px;
+}
+
+/*/////////////////////////////////////*/
+.line7 {
+    transform: rotate(70deg);
+}
+
+.linewrapper7 {
+    transform: translate(510px, 457px);
+}
+.lineitem7 {
+    padding: 2px;
+}
+/*/////////////////////////////////////*/
+.line8 {
+    transform: rotate(-70deg);
+}
+
+.linewrapper8 {
+    transform: translate(570px, -866px);
+}
+.lineitem8 {
+    padding: 2px;
+}
+/*/////////////////////////////////////*/
+.line9 {
+    transform: rotate(70deg);
+}
+
+.linewrapper9 {
+    transform: translate(625px, 457px);
+}
+.lineitem9 {
+    padding: 2px;
+}
