@@ -3,9 +3,17 @@ const router = express.Router();
 const Resv = require( '../models/resvSchema' );
 const mongoose = require( 'mongoose' );
 router.route( '/reservations' )
+
 router.get( '/reservations', async ( req, res ) => {
-    const allResvs = await ( Resv.find() );
-    res.send( allResvs );
+    await ( Resv.find() )
+        .then( ( result ) => res.send( {
+            status: 'ok',
+            result: result
+        } ) )
+        .catch( ( err ) => res.send( {
+            status: 'fail',
+            result: err
+        } ) )
 } );
 
 router.post( '/reservations/', async ( req, res ) => {
@@ -19,15 +27,39 @@ router.post( '/reservations/', async ( req, res ) => {
         email: email,
         chairxds: chairxds
     } )
-    thisResv.save();
-    console.log( thisResv )
-    res.send( 'ok' )
-} );
+    await thisResv.save()
+        .then( () => {
+            res.send( {
+                status: 'ok',
+            } )
+        } )
+        .catch( ( err ) => {
+            res.send( {
+                status: 'fail',
+                result: err
+            } )
+        } )
+} )
 
 router.delete( '/reservations/:id', async ( req, res ) => {
-    const all = await Resv.find();
-    const ths = all[ req.params.id ];
-    await Resv.deleteOne( ths );
-    res.send( 'ok' )
+    await ( Resv.find() )
+        .catch( ( err ) => {
+            res.send( {
+                status: 'fail',
+                result: err
+            } )
+        } )
+        .then( async ( all ) => {
+            const ths = all[ req.params.id ];
+            await ( Resv.deleteOne( ths ) )
+                .then( res.send( { status: 'ok' } ) )
+                .catch( (err) => {
+                    res.send( {
+                        status: 'fail',
+                        result: err
+                    } )
+                } )
+        } )
 } );
+
 module.exports = router;

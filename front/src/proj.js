@@ -4,10 +4,6 @@ import { useState, useEffect } from 'react'
 import JsPDF from 'jspdf'
 import api from "./seats";
 
-const getterz = async () => {
-    const respon = await api.get( "/seats" );
-    return respon.data;
-};
 
 const RELOAD = () => {
     return new Promise( () => {
@@ -30,69 +26,101 @@ function invoicer( i ) {
 
 export default function ProjX() {
     //api get seats
-    var [ zzzarr, setzzzArr ] = useState( [] );
     var [ arr, setArr ] = useState( [] );
     var [ notification, setNotification ] = useState( <></> );
 
-    useEffect( () => {
-        // var i
-        // var zzz = []
-        // for ( i = 1; i < 31; i++ ) {
-        //     var curr = {
-        //         'xd': `Z` + i.toString(),
-        //         'color': 'green'
-        //     }
-        //     zzz = [ ...zzz, curr ]
 
-        //     console.log( zzz )
-        // }
-        getterz().then( ( x ) => {
-            setArr( x[ 0 ].seats )
-            console.log( x[ 0 ].seats )
-        } );
+    async function getterz() {
+        await ( api.get( "/seats" ) )
+            .then(
+                ( res ) => {
+                    if ( res.data.status == 'ok' ) {
+                        setArr( res.data.result )
+                    }
+                    else { alert( res.data.result ) }
+                }
+            )
+            .catch( ( err ) => {
+                alert( err.message )
+            } )
+    }
+    useEffect( () => {
+        getterz()
     }, [ notification ] );
 
-    const throwInvoice = () => {
-        setInvoice( false );
-    }
 
     //api update/request seats
     const xdUpdater = async () => {
         setPlease( "Please Wait, Checking the seats" );
-        var res = ( await api.post( `/resvd/`, {
+        await ( api.post( `/resvd/`, {
             chairxds: selectedxd
-        } ) ).data;
-        if ( res.check == false ) {
-            alert( 'SOME OR ALL SEATS YOU HAVE SELECTED HAD JUST BEEN TAKEN BY ANOTHER USER, THE PAGE WILL RELOAD NOW ' );
-            RELOAD();
-        };
-        if ( res.check == true ) { seatsUpdater(); };
+        } ) ).then( ( res ) => {
+            if ( res.data.status == 'booked' ) {
+                console.log( res.data )
+                alert( 'SOME OR ALL SEATS YOU HAVE SELECTED HAD JUST BEEN TAKEN BY ANOTHER USER, THE PAGE WILL RELOAD NOW ' );
+                RELOAD();
+            }
+            else if ( res.data.status == 'fail' ) {
+                alert( res.data.result )
+            }
+            else { seatsUpdater(); };
+        } )
+            .catch( ( err ) => { alert( err.message ) } )
     }
 
     const seatsUpdater = async () => {
-        await api.put( `/seats/${ selectedxd }`, {
-            chairxds: selectedxd,
-            color: "yellow"
-        } );
-        await api.post( `/resvd/${ selectedxd }`, {
+        await ( api.post( `/resvd/${ selectedxd }`, {
             chairxds: selectedxd
-        } );
-        tableUpdater();
-        throwInvoice();
+        } ) )
+            .then( async ( res ) => {
+                if ( res.data.status == 'ok' ) {
+                    await ( api.put( `/seats/${ selectedxd }`, {
+                        chairxds: selectedxd,
+                        color: "yellow"
+                    } ) )
+                        .then( async ( res ) => {
+                            if ( res.data.status == 'ok' ) {
+                                await tableUpdater();
+                                throwInvoice();
+                            }
+                            else { alert( res.data.result ) }
+                        }
+                        )
+                        .catch( ( err ) => {
+                            alert( err.message )
+                        } )
+                }
+                else {
+                    alert( res.data.result )
+                }
+            } )
+            .catch( err => { alert( err.message ) } )
     };
 
-    const final = () => {
-        RELOAD();
-    };
-
-    const tableUpdater = async () => {
-        await api.post( `/reservations/`, {
+    const tabU = async () => {
+        await ( api.post( `/reservations/`, {
             "userName": userName,
             "email": email,
             "chairxds": selectedxd,
             "phoneNum1": phoneNumber1,
         }
-        );
+        )
+        )
+    }
+    const tableUpdater = async () => {
+        await tabU()
+            .then( () => { return } )
+            .catch( err => window.ononline( () => {
+                tableUpdater()
+            } ) )
+    };
+
+    const throwInvoice = () => {
+        setInvoice( false );
+    }
+
+    const final = () => {
+        RELOAD();
     };
 
     //functions of frontend
@@ -133,6 +161,7 @@ export default function ProjX() {
         var phonevalue = event.target.value;
         setPhoneNumber1( phonevalue );
     };
+
     //first button
     function form() {
         if ( numSeats > 0 ) {

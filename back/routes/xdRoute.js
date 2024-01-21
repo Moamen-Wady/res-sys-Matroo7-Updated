@@ -2,41 +2,91 @@ const express = require( 'express' );
 const router = express.Router();
 const Xd = require( '../models/xdSchema' );
 const mongoose = require( 'mongoose' );
-
+const mongodb = require( 'mongodb' );
 router.route( '/resvd' );
-router.post( '/resvd/', async ( req, res ) => {
-    var xds = await req.body.chairxds
-    var ar = []
-    var curr = ( await Xd.find() ).map( ( e ) => {
-        ar = [ ...ar, e.Xd ]
-        return ar
-    } )
-    var ok = await xds.filter( ( e ) => ar.indexOf( e ) > -1 )
-    var l = ok.length
-    if ( l > 0 ) {
-        res.send( { check: false } );
-    }
-    if ( l <= 0 ) { res.send( { check: true } ) }
 
+router.post( '/resvd/', async ( req, res ) => {
+    var xds = req.body.chairxds
+    var i = 0
+    var bulkArr = []
+    while ( i < xds.length ) {
+        var x = xds[ i ]
+        bulkArr.push( x )
+        i++
+    }
+    await ( Xd.find( { Xd: { $in: bulkArr } } ) )
+        .then( ( arr ) => {
+            if ( arr.length > 0 ) {
+                res.send( {
+                    status: 'booked'
+                } )
+            }
+            else {
+                res.send( {
+                    status: 'ok'
+                } )
+            }
+        }
+        )
+        .catch( ( err ) => {
+            res.send( {
+                status: 'fail',
+                result: err.message
+            } )
+        } );
 } )
+
 router.post( '/resvd/:id', async ( req, res ) => {
-    var xds = await req.body.chairxds
+    var xds = req.body.chairxds
     var i = 0;
+    var bulkArr = []
     while ( i < xds.length ) {
         var x = xds[ i ]
-        await Xd.create( { Xd: x } );
+        bulkArr.push( {
+            insertOne: {
+                document: {
+                    Xd: x
+                }
+            }
+        } )
         i++
     }
-    res.send("ok")
+    let updateResult = await ( Xd.bulkWrite( bulkArr, { ordered: true } ) )
+        .then( () => res.send( {
+            status: 'ok'
+        } ) )
+        .catch( ( err ) => {
+            res.send( {
+                status: 'fail',
+                result: err.message
+            } )
+        } )
 } );
+
 router.put( '/resvd/:id', async ( req, res ) => {
-    var xds = await req.body.chairxds
+    var xds = req.body.chairxds
     var i = 0;
+    var bulkArr = []
     while ( i < xds.length ) {
         var x = xds[ i ]
-        await Xd.deleteMany( { Xd: x } );
+        bulkArr.push( {
+            deleteOne: {
+                document: {
+                    Xd: x
+                }
+            }
+        } )
         i++
     }
-    res.send("ok")
+    let updateResult = await ( Xd.bulkWrite( bulkArr, { ordered: true } ) )
+        .then( () => res.send( {
+            status: 'ok'
+        } ) )
+        .catch( ( err ) => {
+            res.send( {
+                status: 'fail',
+                result: err.message
+            } )
+        } )
 } );
 module.exports = router;

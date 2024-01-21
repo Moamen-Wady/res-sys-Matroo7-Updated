@@ -4,45 +4,68 @@ import { useState, useEffect } from 'react'
 import api from './seats'
 import JsPDF from 'jspdf'
 
+
+const RELOAD = () => {
+    return new Promise( () => {
+        setTimeout( () => {
+            window.location.reload();
+        }, 500 );
+    } )
+};
+
+function invoicer( i ) {
+    switch ( i ) {
+        case true:
+            return 'none';
+        case false:
+            return 'block';
+        default:
+            return '';
+    }
+}
+
+
 export default function Dashboard() {
     var [ arr, setArr ] = useState( [] )
     var [ tab, setTab ] = useState( [] )
     var [ selectedxd, setSelectedxd ] = useState( [] );
+
     //api get seats
-    const getSeats = async () => {
-        const respon = await api.get( '/seats' );
-        return respon.data;
-    };
-    const getReservations = async () => {
-        const respon = await api.get( '/reservations' );
-        return respon.data;
-    };
-    const getAllSeats = async () => {
-        const allSeats = await getSeats();
-        if ( allSeats ) setArr( allSeats );
-    };
-    const getAllReservations = async () => {
-        const allResvs = await getReservations();
-        if ( allResvs ) setTab( allResvs );
-    };
+
+    async function getterSeats() {
+        await ( api.get( "/seats" ) )
+            .then(
+                ( res ) => {
+                    if ( res.data.status == 'ok' ) {
+                        setArr( res.data.result )
+                    }
+                    else { alert( res.data.result ) }
+                }
+            )
+            .catch( ( err ) => {
+                alert( err.message )
+            } )
+    }
+    async function getterResvs() {
+        await ( api.get( "/reservations" ) )
+            .then(
+                ( res ) => {
+                    if ( res.data.status == 'ok' ) {
+                        setTab( res.data.result )
+                    }
+                    else { alert( res.data.result ) }
+                }
+            )
+            .catch( ( err ) => {
+                alert( err.message )
+            } )
+    }
+
     useEffect( () => {
-        const getAllSeats = async () => {
-            const allSeats = await getSeats();
-            if ( allSeats ) setArr( allSeats );
-        };
-        const getAllReservations = async () => {
-            const allResvs = await getReservations();
-            if ( allResvs ) setTab( allResvs );
-        };
-        getAllSeats(); getAllReservations();
-    }, [] );
-    const RELOAD = () => {
-        return new Promise( () => {
-            setTimeout( () => {
-                window.location.reload();
-            }, 500 );
-        } )
-    };
+        getterSeats()
+        getterResvs()
+    }, [  ] );
+
 
     //api diagram buttons functions
     const yellower = async ( arr ) => {
@@ -53,7 +76,7 @@ export default function Dashboard() {
         await api.post( `/resvd/${ arr }`, {
             chairxds: arr
         } );
-        getAllSeats(); RELOAD();
+        getterSeats(); RELOAD();
     };
 
     const greener = async ( arr ) => {
@@ -64,7 +87,7 @@ export default function Dashboard() {
         await api.put( `/resvd/${ arr }`, {
             chairxds: arr
         } );
-        getAllSeats(); RELOAD();
+        getterSeats(); RELOAD();
     };
 
     const reder = async ( arr ) => {
@@ -75,7 +98,7 @@ export default function Dashboard() {
         await api.post( `/resvd/${ arr }`, {
             chairxds: arr
         } );
-        getAllSeats(); RELOAD();
+        getterSeats(); RELOAD();
     };
 
 
@@ -88,7 +111,7 @@ export default function Dashboard() {
         await api.post( `/resvd/${ arr }`, {
             chairxds: arr
         } );
-        getAllSeats();
+        getterSeats();
     };
     const deleteSeatsTable = async ( arr ) => {
         await api.put( `/seats/${ arr }`, {
@@ -101,16 +124,24 @@ export default function Dashboard() {
         await api.put( `/resvd/${ arr }`, {
             chairxds: arr
         } );
-        getAllSeats();
+        getterSeats();
     };
     const deleteUserTable = async ( x, y ) => {
         console.log( y );
         await api.delete( `/reservations/${ y }` );
         deleteSeatsTable( x );
-        getAllReservations();
+        getterResvs();
     };
-    //frontend
-    var [ selectedxd, setSelectedxd ] = useState( [] );
+
+    /*///////////////////////////////////////////////////////////
+    ////////////////////////////////////////////////////////////
+    ////////////////////////////////////////////////////////////
+    ////////////////////////////////////////////////////////////
+    ////////////////////////////////////////////////////////////
+    ////////////////////////////////////////////////////////////*/
+
+    //FRONTEND FUNCTIONS
+
     function cellColor( color ) {
         switch ( color ) {
             case 'green':
