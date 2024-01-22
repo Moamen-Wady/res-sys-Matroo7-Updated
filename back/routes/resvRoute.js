@@ -12,7 +12,7 @@ router.get( '/reservations', async ( req, res ) => {
         } ) )
         .catch( ( err ) => res.send( {
             status: 'fail',
-            result: err
+            result: err.message
         } ) )
 } );
 
@@ -21,6 +21,7 @@ router.post( '/reservations/', async ( req, res ) => {
     var phoneNum1 = req.body.phoneNum1
     var email = req.body.email
     var chairxds = req.body.chairxds
+    
     var thisResv = new Resv( {
         userName: userName,
         phoneNum1: phoneNum1,
@@ -36,7 +37,7 @@ router.post( '/reservations/', async ( req, res ) => {
         .catch( ( err ) => {
             res.send( {
                 status: 'fail',
-                result: err
+                result: err.message
             } )
         } )
 } )
@@ -46,7 +47,7 @@ router.delete( '/reservations/:id', async ( req, res ) => {
         .catch( ( err ) => {
             res.send( {
                 status: 'fail',
-                result: err
+                result: err.message
             } )
         } )
         .then( async ( all ) => {
@@ -56,7 +57,7 @@ router.delete( '/reservations/:id', async ( req, res ) => {
                 .catch( (err) => {
                     res.send( {
                         status: 'fail',
-                        result: err
+                        result: err.message
                     } )
                 } )
         } )

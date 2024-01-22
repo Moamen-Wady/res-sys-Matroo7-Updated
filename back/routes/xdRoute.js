@@ -51,7 +51,7 @@ router.post( '/resvd/:id', async ( req, res ) => {
         } )
         i++
     }
-    let updateResult = await ( Xd.bulkWrite( bulkArr, { ordered: true } ) )
+    await ( Xd.bulkWrite( bulkArr, { ordered: true } ) )
         .then( () => res.send( {
             status: 'ok'
         } ) )
@@ -70,7 +70,7 @@ router.put( '/resvd/:id', async ( req, res ) => {
     while ( i < xds.length ) {
         var x = xds[ i ]
         bulkArr.push( {
-            deleteOne: {
+            deleteMany: {
                 document: {
                     Xd: x
                 }
@@ -78,7 +78,7 @@ router.put( '/resvd/:id', async ( req, res ) => {
         } )
         i++
     }
-    let updateResult = await ( Xd.bulkWrite( bulkArr, { ordered: true } ) )
+    await ( Xd.bulkWrite( bulkArr, { ordered: true } ) )
         .then( () => res.send( {
             status: 'ok'
         } ) )
