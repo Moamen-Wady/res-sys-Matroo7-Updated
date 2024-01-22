@@ -1,9 +1,11 @@
-import React from 'react'
+import React, { memo } from 'react'
 import './proj.css'
 import { useState, useEffect } from 'react'
 import api from "./seats";
 import Tools from './tools';
 import SeatStructure from './SeatStructure';
+import DisplayerBoxes from './DisplayerBoxes';
+import FinalInvoice from './FinalInvoice';
 function invoicer( i ) {
     switch ( i ) {
         case true:
@@ -28,7 +30,7 @@ const xdUpdater = async ( arrz, RELOAD, cb0, cb, cb1, cb2, userName, email, sele
         else if ( res.data.status === 'fail' ) {
             alert( res.data.result )
         }
-        else { cb( arrz, cb1, cb2 ); };
+        else { cb( arrz, cb1, cb2, userName, email, selectedxd, phoneNumber1 ); };
     } )
         .catch( ( err ) => { alert( err.message ) } )
 }
@@ -75,10 +77,13 @@ const tableUpdater = async ( userName, email, selectedxd, phoneNumber1 ) => {
         } ) )
 };
 
-export default function ProjX( { RELOAD, downloadInvoiceTable, getterSeats, arr, USERPANEL, SeatStructureEvents } ) {
+const Seats = memo( SeatStructure )
+
+
+export default function ProjX( { RELOAD, downloadInvoiceTable, arr, USERPANEL, SeatStructureEvents } ) {
     var [ userName, setUserName ] = useState()
     var [ email, setEmail ] = useState()
-    var [ numSeats, setNumSeats ] = useState( 1 )
+    var [ numSeats, setNumSeats ] = useState( 0 )
     var [ phoneNumber1, setPhoneNumber1 ] = useState()
     var [ confirm, setConfirm ] = useState( true )
     var [ invoice, setInvoice ] = useState( true )
@@ -86,10 +91,6 @@ export default function ProjX( { RELOAD, downloadInvoiceTable, getterSeats, arr,
     var [ selectedxd, setSelectedxd ] = useState( [] );
     var [ please, setPlease ] = useState( "" );
     var [ notification, setNotification ] = useState( <></> );
-
-    // useEffect( () => {
-    //     getterSeats()
-    // }, [ notification ] );
 
     //form handlers
     const handleChangeName = ( event ) => {
@@ -108,10 +109,8 @@ export default function ProjX( { RELOAD, downloadInvoiceTable, getterSeats, arr,
         var phonevalue = event.target.value;
         setPhoneNumber1( phonevalue );
     };
-
-    //form button
     function taker() {
-        if ( userName === null || numSeats === null || phoneNumber1 === null || email === null ) {
+        if ( userName == null || numSeats == null || phoneNumber1 == null || email == null ) {
             alert( "PLEASE FILL ALL FIELDS IN THE FORM ABOVE " );
         }
         else {
@@ -127,15 +126,13 @@ export default function ProjX( { RELOAD, downloadInvoiceTable, getterSeats, arr,
             alert( "Please choose A valid number of seats" )
         }
     }
-
-    // copy Seats ids into table when choosing seats
     function onCheck( e, xd, item ) {
-        if ( userName === null || numSeats === null || phoneNumber1 === null || email === null || notification === null ) {
+        if ( userName == null || numSeats == null || phoneNumber1 == null || email == null || notification == null ) {
             alert( "PLEASE FILL ALL FIELDS IN THE FORM ABOVE " );
             e.target.checked = false;
             return
         }
-        if ( e.target.checked && selectedxd.length === numSeats ) {
+        if ( e.target.checked && selectedxd.length == numSeats ) {
             alert( `You Have Already Chosen ${ numSeats } Seats ` )
             e.target.checked = false;
             return
@@ -151,15 +148,11 @@ export default function ProjX( { RELOAD, downloadInvoiceTable, getterSeats, arr,
             setSelectedxd( selectedxd.filter( ( currItem ) => currItem !== xd ) );
         }
     };
-
-    //throw invoice
     const throwInvoice = () => {
         setInvoice( false );
     }
-
-    //finished selecting and send 
     const requestTicket = () => {
-        if ( selectedxd.length === numSeats ) {
+        if ( selectedxd.length == numSeats ) {
             xdUpdater( selectedxd, RELOAD, setPlease, seatsUpdater, tableUpdater, throwInvoice, userName, email, selectedxd, phoneNumber1 );
         }
         else {
@@ -222,117 +215,31 @@ export default function ProjX( { RELOAD, downloadInvoiceTable, getterSeats, arr,
                 </button>
                 { notification }
                 <Tools />
-                <SeatStructure SeatStructureEvents={ SeatStructureEvents } arr={ arr } onCheck={ onCheck } USERPANEL={ USERPANEL } />
-                <div className='displayerBoxes'>
-                    <button className='confirm slctbtn' disabled={ confirm } onClick={ () => requestTicket() }>Confirm Selection</button>
-                    <p className='please'>{ please }</p>
-                    <table className='Displaytable'>
-                        <tbody>
-                            <tr><td className='hdr'><p>Name</p></td></tr >
-                            <tr><td className='dt'><p>{ userName }</p></td></tr>
-                            <tr><td className='hdr'><p>Serial Numbers of Seats</p></td></tr >
-                            <tr><td className='dt'><p>{ selectedxd.toString() }</p></td></tr>
-                            <tr><td className='hdr'><p>Phone Number</p></td></tr >
-                            <tr><td className='dt'><p>{ phoneNumber1 }</p></td></tr>
-                            <tr><td className='hdr'><p>E-mail</p></td></tr >
-                            <tr><td className='dt'><p>{ email }</p></td></tr>
-                            <tr><td className='hdr'>Total Price</td></tr>
-                            <tr><td className='dt'>{
-                                selectedxd.filter( x => x.charAt( 0 ) == "A" ).length * 650 +
-                                selectedxd.filter( x => x.charAt( 0 ) == "B" ).length * 650 +
-                                selectedxd.filter( x => x.charAt( 0 ) == "C" ).length * 650 +
-                                selectedxd.filter( x => x.charAt( 0 ) == "D" ).length * 650 +
-                                selectedxd.filter( x => x.charAt( 0 ) == "E" ).length * 650 +
-                                selectedxd.filter( x => x.charAt( 0 ) == "F" ).length * 650 +
-                                selectedxd.filter( x => x.charAt( 0 ) == "G" ).length * 500 +
-                                selectedxd.filter( x => x.charAt( 0 ) == "H" ).length * 500 +
-                                selectedxd.filter( x => x.charAt( 0 ) == "I" ).length * 500 +
-                                selectedxd.filter( x => x.charAt( 0 ) == "J" ).length * 500 +
-                                selectedxd.filter( x => x.charAt( 0 ) == "K" ).length * 500 +
-                                selectedxd.filter( x => x.charAt( 0 ) == "L" ).length * 500 +
-                                selectedxd.filter( x => x.charAt( 0 ) == "M" ).length * 500 +
-                                selectedxd.filter( x => x.charAt( 0 ) == "N" ).length * 500 +
-                                selectedxd.filter( x => x.charAt( 0 ) == "O" ).length * 500 +
-                                selectedxd.filter( x => x.charAt( 0 ) == "P" ).length * 500 +
-                                selectedxd.filter( x => x.charAt( 0 ) == "Q" ).length * 350 +
-                                selectedxd.filter( x => x.charAt( 0 ) == "R" ).length * 350 +
-                                selectedxd.filter( x => x.charAt( 0 ) == "S" ).length * 350 +
-                                selectedxd.filter( x => x.charAt( 0 ) == "T" ).length * 350 +
-                                selectedxd.filter( x => x.charAt( 0 ) == "U" ).length * 350 +
-                                selectedxd.filter( x => x.charAt( 0 ) == "V" ).length * 350 +
-                                selectedxd.filter( x => x.charAt( 0 ) == "W" ).length * 350 +
-                                selectedxd.filter( x => x.charAt( 0 ) == "X" ).length * 350 +
-                                selectedxd.filter( x => x.charAt( 0 ) == "Y" ).length * 350 +
-                                selectedxd.filter( x => x.charAt( 0 ) == "Z" ).length * 350
-                            }
-                            </td>
-                            </tr>
-                        </tbody>
-                    </table>
-                </div>
-                <span>
-                    <div className='invoice' style={ { display: invoicer( invoice ), zIndex: 2000000 } }>
-                        <p style={ { color: 'black' } }><br />
-                            تم تسجيل الحجز بنجاح ✅<br /><br />
-                            <b>pdfبرجاء تنزيل نسخة ال <br /> Doneقبل الضغط على زر </b><br />
-                            تم تسجيل حجزك و سيتم ارسال رسالة تأكيد الى عنوان البريد الالكتروني خاصتكم
-                        </p>
-                        <hr />
-                        <table className='Displaytable ivt'>
-                            <tbody>
-                                <tr><td className='hdr'>Name</td></tr>
-                                <tr><td className='dt'>{ userName }</td></tr>
-                                <tr><td className='hdr'>Serial Numbers of Seats</td></tr>
-                                <tr><td className='dt'>{ selectedxd.toString() }</td></tr>
-                                <tr><td className='hdr'>Phone Number</td></tr>
-                                <tr><td className='dt'>{ phoneNumber1 }</td></tr >
-                                <tr><td className='hdr'>E-mail</td></tr>
-                                <tr><td className='dt'>{ email }</td></tr >
-                                <tr><td className='hdr'>Total Price</td></tr>
-                                <tr><td className='dt'>{
-
-                                    selectedxd.filter( x => x.charAt( 0 ) == "A" ).length * 650 +
-                                    selectedxd.filter( x => x.charAt( 0 ) == "B" ).length * 650 +
-                                    selectedxd.filter( x => x.charAt( 0 ) == "C" ).length * 650 +
-                                    selectedxd.filter( x => x.charAt( 0 ) == "D" ).length * 650 +
-                                    selectedxd.filter( x => x.charAt( 0 ) == "E" ).length * 650 +
-                                    selectedxd.filter( x => x.charAt( 0 ) == "F" ).length * 650 +
-                                    selectedxd.filter( x => x.charAt( 0 ) == "G" ).length * 500 +
-                                    selectedxd.filter( x => x.charAt( 0 ) == "H" ).length * 500 +
-                                    selectedxd.filter( x => x.charAt( 0 ) == "I" ).length * 500 +
-                                    selectedxd.filter( x => x.charAt( 0 ) == "J" ).length * 500 +
-                                    selectedxd.filter( x => x.charAt( 0 ) == "K" ).length * 500 +
-                                    selectedxd.filter( x => x.charAt( 0 ) == "L" ).length * 500 +
-                                    selectedxd.filter( x => x.charAt( 0 ) == "M" ).length * 500 +
-                                    selectedxd.filter( x => x.charAt( 0 ) == "N" ).length * 500 +
-                                    selectedxd.filter( x => x.charAt( 0 ) == "O" ).length * 500 +
-                                    selectedxd.filter( x => x.charAt( 0 ) == "P" ).length * 500 +
-                                    selectedxd.filter( x => x.charAt( 0 ) == "Q" ).length * 350 +
-                                    selectedxd.filter( x => x.charAt( 0 ) == "R" ).length * 350 +
-                                    selectedxd.filter( x => x.charAt( 0 ) == "S" ).length * 350 +
-                                    selectedxd.filter( x => x.charAt( 0 ) == "T" ).length * 350 +
-                                    selectedxd.filter( x => x.charAt( 0 ) == "U" ).length * 350 +
-                                    selectedxd.filter( x => x.charAt( 0 ) == "V" ).length * 350 +
-                                    selectedxd.filter( x => x.charAt( 0 ) == "W" ).length * 350 +
-                                    selectedxd.filter( x => x.charAt( 0 ) == "X" ).length * 350 +
-                                    selectedxd.filter( x => x.charAt( 0 ) == "Y" ).length * 350 +
-                                    selectedxd.filter( x => x.charAt( 0 ) == "Z" ).length * 350
-                                }
-                                </td>
-                                </tr>
-
-                            </tbody >
-                        </table >
-                        <button onClick={ () => downloadInvoiceTable() }>Download PDF</button>
-                        <hr />
-                        <p style={ { color: 'black' } }>
-                            <br />
-                            please download the PDF version before clicking Done <br />
-                            You will recieve a confirmation message on the email provided in the form
-                        </p>
-                        <button onClick={ () => RELOAD() }>Done</button>
-                    </div >
-                </span>
+                <Seats
+                    SeatStructureEvents={ SeatStructureEvents }
+                    arr={ arr }
+                    onCheck={ onCheck }
+                    USERPANEL={ USERPANEL }
+                />
+                <DisplayerBoxes
+                    confirm={ confirm }
+                    please={ please }
+                    requestTicket={ requestTicket }
+                    userName={ userName }
+                    email={ email }
+                    phoneNumber1={ phoneNumber1 }
+                    selectedxd={ selectedxd }
+                />
+                <FinalInvoice
+                    userName={ userName }
+                    email={ email }
+                    phoneNumber1={ phoneNumber1 }
+                    selectedxd={ selectedxd }
+                    downloadInvoiceTable={ downloadInvoiceTable }
+                    RELOAD={ RELOAD }
+                    invoicer={ invoicer }
+                    invoice={ invoice }
+                />
             </div>
         </div>
     )

@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import ProjX from './proj'
 import Dashboard from './dashboard'
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom'
@@ -9,6 +9,13 @@ import xz from './mtr'
 export default function App() {
     var [ arr, setArr ] = useState( [] );
     var [ tab, setTab ] = useState( [] )
+
+
+    useEffect( () => {
+        getterSeats()
+        getterResvs()
+    }, [] );
+
 
     const RELOAD = () => {
         return new Promise( () => {
@@ -55,8 +62,8 @@ export default function App() {
             } )
     }
 
-    function SeatStructureEvents( USERPANEL, color ) {
-        if ( !USERPANEL ) {
+    const SeatStructureEvents = ( USERPANEL, color ) => {
+        if ( USERPANEL == false ) {
             return 'all'
         }
         else {
@@ -78,7 +85,6 @@ export default function App() {
                             RELOAD={ RELOAD }
                             downloadInvoiceTable={ downloadInvoiceTable }
                             arr={ arr }
-                            getterSeats={ getterSeats }
                             USERPANEL={ true }
                             SeatStructureEvents={ SeatStructureEvents }
                         /> } />

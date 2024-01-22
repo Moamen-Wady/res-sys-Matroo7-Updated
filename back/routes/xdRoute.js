@@ -71,7 +71,7 @@ router.put( '/resvd/:id', async ( req, res ) => {
         var x = xds[ i ]
         bulkArr.push( {
             deleteMany: {
-                document: {
+                filter: {
                     Xd: x
                 }
             }

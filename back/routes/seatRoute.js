@@ -45,10 +45,9 @@ router.put( '/seats/:id', async ( req, res ) => {
                 "update": { '$set': { color: color } }
             }
         } )
-        console.log( bulkArr )
         i++
     }
-    let updateResult = await ( Seat.bulkWrite( bulkArr, { ordered: true } ) )
+    await ( Seat.bulkWrite( bulkArr, { ordered: true } ) )
         .then( () => res.send( {
             status: 'ok'
         } ) )
